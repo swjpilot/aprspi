@@ -6,6 +6,7 @@
   * [Cable pinout: VX-4500](#cable-pinout-vx-4500)
 - [Software Dependencies](#software-dependencies)
 - [Installation](#installation)
+- [Debugging](#debugging)
 - [Appendix: Getting USB hotplug support to work](#appendix-getting-usb-hotplug-support-to-work)
 
 <!-- tocstop -->
@@ -111,6 +112,59 @@ pass edit comp/n2ygk/n2ygk
 # copy in contents of /tmp/t
 pass git push
 ```
+
+## Debugging
+
+If you're having a problem and the DINAH appears not to be working correctly, here are some
+possible debugging steps. Note that the green LED at the USB end of the DINAH should be flashing
+when it is working properly.
+
+With a keyboard, mouse and hdmi display connected to the Pi, type:
+
+```
+startx
+```
+
+After a bit of time the screen will turn grey with a title bar along the bottom that says something like Workspace1.
+
+* Right click the mouse and select **xterm**.
+
+A terminal window will open.  Type these commands:
+
+```
+sudo -s
+systemctl status dinah
+systemctl stop dinah
+cp ~YOUR_USER/.Xauthority ~/
+soundmodemconfig
+```
+
+You'll see a SoundModem Configuration window.
+* Click on sm0/Channel 0
+* Then click on Diagnostics/Scope
+
+You will see a scope display with floor-to-ceiling noise when there's
+no signal and a much narrower amplitude and the DCD indicator on when
+a signal is decoded.  When a signal decodes you'll also see the Packet
+display in the xterm showing what was decoded.
+
+Open squelch noise:
+![Noise scope image](noise.png)
+
+A captured signal (note the DCD indicator):
+![Signal scope image](signal.png)
+
+You can also open a second xterm as above (right click/select xterm) and run
+```
+alsamixer -g
+```
+to interactively adjust the capture gain. (The -g is to turn off the horrible unreadable colors.)
+If you find that you had to change the gain settings (should not be needed) do this to store
+the new values (and let me know):
+```
+alsactl store
+```
+When you are done, right click and select Exit to exit from the X11 display.
 
 ## Appendix: Getting USB hotplug support to work
 
