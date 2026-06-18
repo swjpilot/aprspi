@@ -151,6 +151,8 @@ dpkg -i ../soundmodem_*.deb
 apt-get install -y aprsdigi
 apt-get install -y aprx
 apt-get install -y emacs
+apt-get install -y xinit
+apt-get install -y xterm
 
 cat >/etc/ax25/axports <<EOF
 #portname	callsign	speed	paclen	window	description
