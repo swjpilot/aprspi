@@ -1,7 +1,0 @@
-/var/log/aprsdigi.log {
-  rotate 12
-  monthly
-  compress
-  missingok
-  notifempty
-}
