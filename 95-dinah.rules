@@ -1,0 +1,15 @@
+# DINAH USB soundmodem/PTT interface (C-Media chip, USB id 0d8c:0012).
+# Installed by install.sh as /etc/udev/rules.d/95-dinah.rules.
+# These rules only work for a single DINAH per Pi.
+
+# Name the ALSA card "DINAH" so configs can use plughw:DINAH,0 and
+# "amixer -c DINAH" no matter what card number it enumerates as.
+SUBSYSTEM=="sound", KERNEL=="card*", ATTRS{idVendor}=="0d8c", ATTRS{idProduct}=="0012", ATTR{id}="DINAH"
+
+# /dev/snd/DINAH plus a systemd device unit (dev-snd-DINAH.device) so that
+# direwolf.service starts on hotplug and stops when the DINAH is unplugged.
+ACTION=="add", SUBSYSTEM=="sound", KERNEL=="controlC[0-9]*", ATTRS{idVendor}=="0d8c", ATTRS{idProduct}=="0012", SYMLINK+="snd/DINAH", TAG+="systemd"
+
+# PTT is a GPIO pin on the chip's HID interface. Give it a stable name
+# (instead of guessing /dev/hidrawN) and let the audio group write to it.
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="0d8c", ATTRS{idProduct}=="0012", GROUP="audio", MODE="0660", SYMLINK+="dinah-ptt"

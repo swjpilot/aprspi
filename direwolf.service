@@ -1,0 +1,23 @@
+[Unit]
+Description=Dire Wolf APRS digipeater and igate on the DINAH
+Documentation=man:direwolf(1) https://github.com/wb2osz/direwolf
+# Start when the DINAH appears (see 95-dinah.rules), stop if it's unplugged.
+BindsTo=dev-snd-DINAH.device
+After=dev-snd-DINAH.device sound.target network-online.target
+Wants=network-online.target
+
+[Service]
+User=direwolf
+Group=direwolf
+SupplementaryGroups=audio
+# -t 0: no ANSI colors in the journal
+ExecStart=/usr/bin/direwolf -t 0 -c /etc/direwolf.conf
+Restart=on-failure
+RestartSec=10
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/log/direwolf
+
+[Install]
+WantedBy=dev-snd-DINAH.device
